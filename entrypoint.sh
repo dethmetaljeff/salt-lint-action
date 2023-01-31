@@ -3,24 +3,17 @@
 set -eo pipefail
 set -x
 
-ACTION_STATE_NAME="${ACTION_STATE_NAME:-init.sls}"
-ACTION_STATE_FIND_PATTERN="${ACTION_STATE_FIND_PATTERN:-$ACTION_STATE_NAME}"
-ACTION_STATE_FIND_PATH="${ACTION_STATE_FIND_PATH:-.}"
-ACTION_STATE_FIND_TYPE="${ACTION_STATE_FIND_TYPE:-name}"
 SALT_LINT_EXTRA_PARAMS="${SALT_LINT_EXTRA_PARAMS}"
 
 set -u
 
 cd "${GITHUB_WORKSPACE}"
 
-ACTION_STATE_PATH="${GITHUB_WORKSPACE}/${ACTION_STATE_FIND_PATH}"
-
-
-if [ -d "${ACTION_STATE_PATH}" ]; then
-  >&2 echo "==> Linting ${ACTION_STATE_PATH} for files ${ACTION_STATE_FIND_PATTERN}, in ${ACTION_STATE_FIND_PATH}"
-  salt-lint ${SALT_LINT_EXTRA_PARAMS} `find "${ACTION_STATE_FIND_PATH}" -type f -regextype posix-egrep -${ACTION_STATE_FIND_TYPE} "${ACTION_STATE_FIND_PATTERN}" ! -name 'secrets.sls'`
+if [[ -n "${INPUT_CHANGED_FILES[*]}" ]]; then
+>&2 echo "==> Running salt-lint on changed files..."
+printf '%s\0' ${INPUT_CHANGED_FILES} | xargs -0 salt-lint ${SALT_LINT_EXTRA_PARAMS}
 else
-  salt-lint ${SALT_LINT_EXTRA_PARAMS} "${ACTION_STATE_PATH}"
+>&2 echo "==> Skipping, no files to lint..."
 fi
 
 >&2 echo
