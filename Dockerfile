@@ -1,8 +1,8 @@
 FROM python:3.9-buster
 
-LABEL "maintainer"="Roald Nefs <info@roaldnefs.com>"
-LABEL "repository"="https://github.com/roaldnefs/salt-lint-action"
-LABEL "homepage"="https://github.com/roaldnefs/salt-lint-action"
+LABEL "maintainer"="Jeff Engleman <dethmetaljeff@gmail.com>"
+LABEL "repository"="https://github.com/dethmetaljeff/salt-lint-action"
+LABEL "homepage"="https://github.com/dethmetaljeff/salt-lint-action"
 
 # Update APT packages
 RUN apt-get update && apt-get upgrade -y -o DPkg::Options::=--force-confold
